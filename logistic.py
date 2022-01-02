@@ -1,4 +1,6 @@
 import numpy as np
+import json
+import copy
 
 class LogisticRegression():
     def __init__(self, learning_rate=1e-1, 
@@ -14,6 +16,8 @@ class LogisticRegression():
         self.gamma = gamma
         self.lambda_ = lambda_
         self.params = None
+        self.update_params = None
+
 
     def _generate_params(self, n_inputs):
         self.params = np.random.rand(n_inputs + 1, 1)
@@ -92,6 +96,7 @@ class LogisticRegression():
             results = self.predict(X)
             gradient = self.gradient(X, y, results)
             self.params += self.update_rule(self.learning_rate * gradient)
+        return self
     
     def _minibatch_batch_optimization(self, X, y, n_iter):
         m, n = X.shape
@@ -110,12 +115,13 @@ class LogisticRegression():
                 results = self.predict(final_batch_X)
                 gradient = self.gradient(final_batch_X, final_batch_y, results)
                 self.params += self.update_rule(self.learning_rate * gradient)
+        return self
 
     def fit(self, X, y, n_iter=1000):
         if self.batch_size == -1:
-            self._batch_optimization(X, y, n_iter)
+            return self._batch_optimization(X, y, n_iter)
         else:
-            self._minibatch_batch_optimization(X, y, n_iter)
+            return self._minibatch_batch_optimization(X, y, n_iter)
         
     def predict(self, X):
         if self.params.all() == None:
@@ -136,3 +142,23 @@ class LogisticRegression():
             return ridge(X_, y, y_pred, self.lambda_, self.params)
         else: 
             return vanilla(X_, y, y_pred)
+
+    def save_params(self, name="logreg_params", path=""):
+        with open(f"{path}{name}.json", 'w') as output:
+            json.dump(self, output, default=lambda o: o.__dict__ if type(o) is not np.ndarray else o.tolist(), 
+                       sort_keys=True, indent=4)
+
+    def load_params(self, name="logreg_params", path=""):
+        with open(f"{path}{name}.json", 'w') as json_file:
+            data = json.load(json_file)
+            self.batch_size = data['batch_size']
+            self.beta = data['beta']
+            self.gamma = data['gamma']
+            self.regularization = data['regularization']
+            self.lambda_ = data['lambda_']
+            self.learning_rate = data['learning_rate']
+            self.optimizer = data['optimizer']
+            self.params = np.array(data['params'])
+            self.update_params = np.array(data['batch_size'])
+
+
