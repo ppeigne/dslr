@@ -19,8 +19,8 @@ def display(data):
 def parser():
     my_parser = argparse.ArgumentParser(description='Display an histogram plot.')
 
-    my_parser.add_argument('-s','--selection',
-                        help='display the courses selected for the training.',
+    my_parser.add_argument('-a','--all',
+                        help='display all the courses of the dataset.',
                         action="store_true")
 
 
@@ -30,8 +30,8 @@ def main():
     data = pd.read_csv("datasets/dataset_train.csv", index_col='Index')
     args = parser()
     
-    if args.selection != None:
-        print(f"Diplays the courses selected for the training.")
+    if not args.all :
+        print(f"Display the courses selected for the training.")
         display(data[["Hogwarts House", "Defense Against the Dark Arts", "Herbology", "Charms", "Ancient Runes"]])
 
     else:

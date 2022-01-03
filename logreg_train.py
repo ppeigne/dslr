@@ -64,3 +64,4 @@ if __name__ == '__main__':
 		# Save models
 		dump(scaler, "scaler.joblib")
 		one_vs_all_save(models)
+		print('Model trained.')
