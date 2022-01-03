@@ -53,13 +53,10 @@ if __name__ == '__main__':
 		imputer = SimpleImputer()
 		x_train = x_train[["Defense Against the Dark Arts", "Herbology", "Charms", "Ancient Runes"]]
 		x_train = imputer.fit_transform(x_train)
-
-		x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, random_state=42)
 		
 		# Normalize data
 		scaler = RobustScaler()
 		x_train = scaler.fit_transform(x_train)
-		x_test = scaler.transform(x_test)
 
 		# Generate one vs all models
 		models = generate_one_vs_all_logistic_reg(x_train, y_train)
@@ -67,8 +64,3 @@ if __name__ == '__main__':
 		# Save models
 		dump(scaler, "scaler.joblib")
 		one_vs_all_save(models)
-
-		prev = one_vs_all_predict(x_test, models)
-
-		met = accuracy_score(y_test, prev)
-		print(met)

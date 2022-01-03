@@ -33,26 +33,29 @@ if __name__ == '__main__':
 		print('Error: wrong dataset given. Please give the proper dataset to test on.')
 	
 	else:
-		# Load data
-		x_test = pd.read_csv(data_path, index_col='Index')[["Defense Against the Dark Arts", "Herbology", "Charms", "Ancient Runes"]]
+		try:
+			# Load data
+			x_test = pd.read_csv(data_path, index_col='Index')[["Defense Against the Dark Arts", "Herbology", "Charms", "Ancient Runes"]]
 
-		# Fill missing values
-		imputer = SimpleImputer()
-		x_test = x_test
-		x_test = imputer.fit_transform(x_test)
-		
-		# Normalize data
-		scaler = load("scaler.joblib")
-		x_test = scaler.transform(x_test)
+			# Fill missing values
+			imputer = SimpleImputer()
+			x_test = x_test
+			x_test = imputer.fit_transform(x_test)
 
-		# Generate one vs all models
-		models = load_one_vs_all_logistic_reg()
+			# Normalize data
+			scaler = load("scaler.joblib")
+			x_test = scaler.transform(x_test)
 
-		# Predict
-		prev = pd.DataFrame(one_vs_all_predict(x_test, models), columns=['Hogwarts House'])
-		prev.index.name = 'Index'
-		h_map = {0: "Ravenclaw", 1: "Slytherin", 2: "Gryffindor", 3: "Hufflepuff"}
-		prev['Hogwarts House'] = prev['Hogwarts House'].map(h_map)
+			# Generate one vs all models
+			models = load_one_vs_all_logistic_reg()
 
-		# Save prediction
-		prev.to_csv('houses.csv', header=True, index=True)
+			# Predict
+			prev = pd.DataFrame(one_vs_all_predict(x_test, models), columns=['Hogwarts House'])
+			prev.index.name = 'Index'
+			h_map = {0: "Ravenclaw", 1: "Slytherin", 2: "Gryffindor", 3: "Hufflepuff"}
+			prev['Hogwarts House'] = prev['Hogwarts House'].map(h_map)
+
+			# Save prediction
+			prev.to_csv('houses.csv', header=True, index=True)
+		except:
+			print('Something wrong happende. Did you train your model before trying to predict with it?')

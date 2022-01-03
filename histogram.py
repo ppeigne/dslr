@@ -51,7 +51,7 @@ def main():
         display_all(data)
 
     else:
-        print("Display the more homegeous score distribution")
+        print("Display the more homegeneous score distribution")
         display(data)
 
 if __name__ == '__main__':
