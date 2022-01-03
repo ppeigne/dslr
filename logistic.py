@@ -149,7 +149,7 @@ class LogisticRegression():
                        sort_keys=True, indent=4)
 
     def load_params(self, name="logreg_params", path=""):
-        with open(f"{path}{name}.json", 'w') as json_file:
+        with open(f"{path}{name}.json", 'r') as json_file:
             data = json.load(json_file)
             self.batch_size = data['batch_size']
             self.beta = data['beta']
@@ -160,5 +160,4 @@ class LogisticRegression():
             self.optimizer = data['optimizer']
             self.params = np.array(data['params'])
             self.update_params = np.array(data['batch_size'])
-
-
+        return self

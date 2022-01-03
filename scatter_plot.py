@@ -37,7 +37,6 @@ def parser():
 
 def main():
     data = pd.read_csv("datasets/dataset_train.csv", index_col='Index')
-    print(data.groupby("Hogwarts House").count())
     args = parser()
 
     courses = ['Arithmancy', 'Astronomy', 'Herbology', 'Defense Against the Dark Arts', 
