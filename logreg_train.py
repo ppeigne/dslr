@@ -8,9 +8,9 @@ from sklearn.preprocessing import RobustScaler
 
 from logistic import LogisticRegression
 
-def generate_one_vs_all_logistic_reg(X, y):
+def generate_one_vs_all_logistic_reg(X, y, params):
 	classes = np.unique(y)		
-	return [LogisticRegression().fit(X, y == c) for c in classes]
+	return [LogisticRegression(**params).fit(X, y == c) for c in classes]
 
 def one_vs_all_save(models):
 	for i, x in enumerate(models):
@@ -24,12 +24,31 @@ def one_vs_all_predict(X, models):
 
 
 def parser():
-    my_parser = argparse.ArgumentParser(description='Train a logistic regression model.')
+	my_parser = argparse.ArgumentParser(description='Train a logistic regression model.')
 
-    my_parser.add_argument('dataset',
-                        help='the dataset you want to train on.')
+	my_parser.add_argument('dataset',
+						help='the dataset you want to train on.')
 
-    return my_parser.parse_args()
+	my_parser.add_argument('-o','--optimizer',
+						choices=['gradient_descent', 'momentum', 'rms', 'adam'],
+						nargs='?',
+						const='gradient_descent',
+						type=str,
+						default='gradient_descent',
+						help='select the optimizer')
+
+	my_parser.add_argument('-bs','--batch_size',
+						nargs='?',
+						const=32,
+						type=int,
+						default=32,
+						help='select the batch size')
+
+	my_parser.add_argument('-r','--regularization',
+						action='store_true',
+						help='if you want to use regularization.')
+
+	return my_parser.parse_args()
 
 
 if __name__ == '__main__':
@@ -58,8 +77,16 @@ if __name__ == '__main__':
 		scaler = RobustScaler()
 		x_train = scaler.fit_transform(x_train)
 
+		# Select learning params
+		params = {
+			'regularization': args.regularization,
+			'optimizer': args.optimizer,
+			'batch_size': args.batch_size
+
+		}
+
 		# Generate one vs all models
-		models = generate_one_vs_all_logistic_reg(x_train, y_train)
+		models = generate_one_vs_all_logistic_reg(x_train, y_train, params)
 
 		# Save models
 		dump(scaler, "scaler.joblib")
