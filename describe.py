@@ -7,8 +7,12 @@ def count(data):
 
 def stats(data):
 	count_ = count(data)
-	mean_ = np.nansum(data) / count_
-	std = np.sqrt(np.nansum((data - mean_) ** 2) / count_)
+	if count_ == 0:
+		mean_ = 0
+		std = 0
+	else:
+		mean_ = np.nansum(data) / count_
+		std = np.sqrt(np.nansum((data - mean_) ** 2) / count_)
 	stats = {
 		'count': count_,
 		'mean': mean_,
@@ -30,6 +34,16 @@ def quartile(data):
 
 	sorted_data = np.sort(data)
 	sorted_data = sorted_data[~np.isnan(sorted_data)]
+	if len(sorted_data) == 0:
+		quartiles = {
+					'min' : 0, 
+					25 : 0,
+					50 : 0,
+					75 : 0,
+					'max' : 0 	
+					}
+		return quartiles
+
 	quartiles = {
 		'min': sorted_data[0],
 		25: get_quartile(sorted_data, .25),
@@ -62,6 +76,10 @@ if __name__ == '__main__':
 	if data_path == None:
 		print('Error: no dataset given. Please give the proper dataset to test on.')
 	else:
+		describe(pd.read_csv(data_path))
+		data = pd.read_csv(data_path)
+		print(describe(data).T)
+		
 		try:
 			describe(pd.read_csv(data_path))
 			data = pd.read_csv(data_path)
