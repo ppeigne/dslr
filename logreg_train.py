@@ -3,8 +3,6 @@ import numpy as np
 import argparse
 from joblib import dump
 
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import RobustScaler
 
@@ -32,6 +30,7 @@ def parser():
                         help='the dataset you want to train on.')
 
     return my_parser.parse_args()
+
 
 if __name__ == '__main__':
 	args = parser()
