@@ -58,7 +58,7 @@ def describe(data):
 	num_features = [c for c in data.columns if data[c].dtype == float]
 	res = pd.DataFrame([{**stats(data[c].to_numpy()), **quartile(data[c].to_numpy())} for c in num_features]).T
 	res.columns = num_features
-	return res.T.round(3)
+	return res.round(3)
 
 
 def parser():
@@ -75,14 +75,9 @@ if __name__ == '__main__':
 
 	if data_path == None:
 		print('Error: no dataset given. Please give the proper dataset to test on.')
-	else:
-		describe(pd.read_csv(data_path))
-		data = pd.read_csv(data_path)
-		print(describe(data).T)
-		
+	else:	
 		try:
-			describe(pd.read_csv(data_path))
-			data = pd.read_csv(data_path)
-			print(describe(data).T)
+			data = pd.read_csv(data_path).dropna(axis=1, how='all')
+			print(describe(data))
 		except:
 			print('There is something wrong with the dataset.')

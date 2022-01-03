@@ -58,4 +58,4 @@ if __name__ == '__main__':
 			# Save prediction
 			prev.to_csv('houses.csv', header=True, index=True)
 		except:
-			print('Something wrong happende. Did you train your model before trying to predict with it?')
+			print('Something wrong happend. Did you train your model before trying to predict with it?')
